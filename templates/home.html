@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Start Here{% endblock %}
+
+{%block body%}
+
+<script>
+  $(document).ready(function () {
+    $(".rbtn").hide();
+
+    let selected = [];
+    $("#proceed").attr("disabled", true);
+
+    $(this).click(function (e) {
+      let cli = e.target.id;
+      // console.log(cli);
+      if (cli[0] === 'b') {
+        $(`#${cli}`).hide();
+        $(`#r${cli}`).show();
+        // console.log(cli);
+        selected.push(parseInt(cli.substr(3)));
+        console.log(selected);
+      } else if (cli[0] === 'r') {
+        $(`#${cli}`).hide();
+        $(`#${cli.substr(1)}`).show();
+        selected = selected.filter((val) => {
+          return val != parseInt(cli.substr(4));
+        }
+        )
+        console.log(selected);
+      }
+
+      if (selected.length > 0) {
+        console.log('h');
+        $("#proceed").removeAttr("disabled");
+      } else if (selected.length === 0) {
+        $("#proceed").attr("disabled", true);
+      }
+    })
+  })
+</script>
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-12 text-center text-capitalize">
+      {% if user.is_authenticated %}
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <h3>WELCOME</h3>
+          </div>
+          <div class="col">
+            <h3>{{user.first_name}}</h3>
+          </div>
+          <div class="col-12">
+            <a href="logout">Logout</a>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <h4>Please <a href="login">login</a> or <a href="signup">Signup</a> to select your team</h4>
+      {% endif %}
+
+    </div>
+  </div>
+
+</div>
+<div class="container my-5">
+  <div class="row g-5">
+    {%for i in data%}
+    <div class="col-md-4 col-sm-12 text-center">
+      <div class="card col ms-auto me-auto" style="width: 22rem;">
+        <img src="../{{i.playerImg}}" class="img-fluid card-img-top" alt="playerimg" style="width: 100%;height: 18rem;">
+        <div class="card-body">
+          <input type="hidden" value="{{i.id}}">
+          <h4 class="card-title">{{i.playerName}}</h5>
+            <p class="card-text">Team {{i.playerTeam}}
+            </p>
+            <p class="card-text">Height {{i.playerHeight}}
+            </p>
+            <p class="card-text">Goals {{i.playerGoals}}
+            </p>
+            <p class="card-text">Matches Played {{i.playerTotalMatches}}
+            </p>
+            {% if user.is_authenticated %}
+            <input type="hidden" id="playerId" value="{{i.id}}">
+            <button type="button" class="abtn btn btn-primary" id="btn{{i.id}}">Add</button>
+            <button type="button" class="rbtn btn btn-danger" id="rbtn{{i.id}}">Remove</button>
+            {% else %}
+
+            {% endif %}
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="container text-center">
+  <div class="row d-flex text-capitalize justify-content-between flex-column align-items-center">
+    <div class="col-4">
+      <h4>Do you wish to proceed ?</h4>
+    </div>
+    <div class="col-3">
+      <button class="btn btn-success" id="proceed">Yes</button>
+    </div>
+
+  </div>
+
+</div>
+</div>
+</div>
+
+{%endblock%}
