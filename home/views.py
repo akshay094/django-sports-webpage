@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
-from .models import players
+from .models import players , team
 from django.contrib.auth.models import User , auth
 from django.contrib import messages;
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -40,3 +41,19 @@ def logout(request):
   auth.logout(request)
   messages.info(request , "Logged Out")
   return redirect('/home')
+
+def teams(request):
+  if request.method == 'POST':
+    someobj = request.POST.get('players')
+    userid = request.POST.get('user')
+    someobj = someobj[1:-1:1]
+    someobj = someobj.split(",")
+    someobj = [int(i) for i in someobj]
+    userid = int(userid)
+
+    for i in someobj:
+      playerobj = players.objects.get(pk = i)
+      finale = team(userid = userid , playerid = playerobj.id)
+      finale.save()
+    
+    return render(request , 'userTeam.html')

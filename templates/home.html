@@ -31,11 +31,15 @@
       }
 
       if (selected.length > 0) {
-        console.log('h');
         $("#proceed").removeAttr("disabled");
       } else if (selected.length === 0) {
         $("#proceed").attr("disabled", true);
       }
+    })
+
+    $("#proceed").click(function (e) {
+      e.preventDefault;
+      $("#ply").attr("value", JSON.stringify(selected));
     })
   })
 </script>
@@ -99,17 +103,23 @@
 
 <div class="container text-center">
   <div class="row d-flex text-capitalize justify-content-between flex-column align-items-center">
+
+
+    {% if user.is_authenticated %}
     <div class="col-4">
       <h4>Do you wish to proceed ?</h4>
     </div>
     <div class="col-3">
-      <button class="btn btn-success" id="proceed">Yes</button>
+      <form action="teams" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="user" name="user" value="{{user.id}}">
+        <input type="hidden" id="ply" name="players" value="">
+        <button type="submit" class="btn btn-success" id="proceed">Yes</button>
+      </form>
     </div>
-
+    {% else %}
+    {% endif %}
   </div>
-
-</div>
-</div>
 </div>
 
 {%endblock%}

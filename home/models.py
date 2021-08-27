@@ -10,6 +10,9 @@ class players(models.Model):
   playerImg = models.ImageField(upload_to='static/img', default="")
 
 class team(models.Model):
-  name = models.CharField(max_length=50)
   userid = models.IntegerField()
   playerid = models.IntegerField()
+
+  def __str__(self):
+    return f"{self.userid} {self.playerid}"
+      
